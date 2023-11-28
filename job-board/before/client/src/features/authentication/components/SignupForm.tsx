@@ -4,10 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signupSchema } from '@backend/constants/schemas/users'
 import { z } from "zod";
 import { useForm } from "react-hook-form";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+
+import { AxiosError } from "axios"
+import { useAuth } from "..";
 
 type SignupValues = z.infer<typeof formSchema>
 
@@ -17,13 +20,22 @@ const formSchema = signupSchema.merge(z.object({ passwordConfirmation: z.string(
 })
 
 export function SignupForm() {
+    const { signup } = useAuth()
     const form = useForm<SignupValues>({
         resolver: zodResolver(formSchema),
-        defaultValues: {},
+        defaultValues: {
+            email: '',
+            password: '',
+            passwordConfirmation: ''
+        },
     })
 
-    function onSubmit(){
-        //
+    async function onSubmit(values: SignupValues){
+        await signup(values.email, values.password).catch(error => {
+            if(error instanceof AxiosError && error.response?.data?.message != null) {
+                form.setError("root", {message: error.response.data.message })
+            }
+    })
     }
 
     return (
@@ -32,7 +44,11 @@ export function SignupForm() {
         <Card className="w-[400px]">
             <CardHeader>
                 <CardTitle>Sign Up</CardTitle>
-                {/* TODO Error Message */}
+                {form.formState.errors.root?.message && (
+                    <CardDescription className="text-red-500 dark:text-red-900">
+                        {form.formState.errors.root.message}
+                    </CardDescription>
+                )}
             </CardHeader>
             <CardContent className="flex flex-col w-full gap-4">
 

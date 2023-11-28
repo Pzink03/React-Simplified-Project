@@ -4,40 +4,88 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useTheme } from "@/hooks/useTheme"
-import { Menu, Moon, Sun } from "lucide-react"
+import { ChevronDown, Menu, Moon, Sun } from "lucide-react"
 import { Link } from "react-router-dom"
+import { useAuth } from "@/features/authentication"
+
+
 
 export function Navbar () {
+  const { user, logout } = useAuth()
+
   return (
       <nav className="sticky top-0 z-10 border-b p-4 bg-white dark:bg-slate-950">
           <div className="container flex items-center justify-between gap-4">
               <span className="text-lg">Pete's Job Board</span>
               <div className="flex">
-                  <ThemeToggleButton />
+                  <ThemeToggleButton />npo
                   <div className='hidden sm:flex'>
                   <NavItem to="/tasks" label="Task Board" />
+                  {user ? (<DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className="data-[state=open]:bg-slate-100 dark:data-[state=open]:bg-slate-800"
+                      >
+                      <span>{user.email}</span>
+                      <ChevronDown className="w-4 h-4 ml-2" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem onClick={logout}>
+                      Logout
+                      </DropdownMenuItem>
+
+                    </DropdownMenuContent>
+                  </DropdownMenu>) : (
+                  <NavItem to="/login" label="Login" />
+                )}
                   </div>
                   <DropdownMenu>
-      <DropdownMenuTrigger asChild className="flex sm:hidden">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="data-[state=open]:bg-slate-100 dark:data-[state=open]:bg-slate-800"
-        >
-        <Menu className="w-5 h-5" />
-          <span className="sr-only">Toggle Theme</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem asChild>
-        <Link to="/tasks" >Task Board</Link>
-        </DropdownMenuItem>
-
-      </DropdownMenuContent>
-    </DropdownMenu>
+                    <DropdownMenuTrigger asChild className="flex sm:hidden">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="data-[state=open]:bg-slate-100 dark:data-[state=open]:bg-slate-800"
+                      >
+                      <Menu className="w-5 h-5" />
+                        <span className="sr-only">Toggle Theme</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem asChild>
+                      <Link to="/tasks" >Task Board</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      {user ? (
+                      <DropdownMenuSub>
+                    <DropdownMenuSubTrigger asChild>
+                      <span className="mr-auto">{user.email}</span>
+                      <ChevronDown className="w-4 h-4 ml-2" />
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuPortal>
+                        <DropdownMenuSubContent>
+                          <DropdownMenuItem onClick={logout}>
+                          Logout
+                          </DropdownMenuItem>
+                        </DropdownMenuSubContent>
+                      </DropdownMenuPortal>
+                    </DropdownMenuSub>
+                  ) : (
+                      <DropdownMenuItem asChild>
+                        <Link to="/login" >Login</Link>
+                      </DropdownMenuItem>
+                    )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
               </div>
           </div>
       </nav>

@@ -7,6 +7,7 @@ import { NotFoundPage } from "@/pages/NotFoundPage"
 import { AuthLayout, SignupForm } from "./features/authentication"
 
 
+
 export const routes: RouteObject[] = [
   {
     path: "/",
