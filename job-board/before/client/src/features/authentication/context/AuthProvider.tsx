@@ -57,7 +57,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     useEffect(() => {
       setIsLoadingUser(true)
-      getLoggedInUser().then(res => setUser(res)).finally(() => setIsLoadingUser(false))
+      getLoggedInUser().then(setUser).finally(() => setIsLoadingUser(false))
     }, [])
 
   return (
