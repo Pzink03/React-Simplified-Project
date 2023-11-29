@@ -1,4 +1,3 @@
-import { useLocalStorage } from "@/hooks/useLocalStorage"
 import { ReactNode, createContext, useEffect, useState } from "react"
 import { User } from "../constants/types"
 import { signup as signupService, login as loginService, logout as logoutService, getLoggedInUser } from "../services/authentication"
@@ -63,7 +62,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   return (
     <Context.Provider
       value={{ user, isLoadingUser, signup, logout, login, isLoggedIn: user != null
-
       }}
     >
       {children}
